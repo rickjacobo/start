@@ -1,0 +1,96 @@
+version: '3'
+
+services:
+    web:
+         image: httpd
+         restart: always
+         ports:
+           - 80:80
+         volumes:
+           - ./web/:/usr/local/apache2/htdocs/
+    opsmon:
+         image: rickjacobo/opsmon
+         restart: always
+         environment:
+           - ENV_SQL_HOSTNAME=${SQL_HOSTNAME}
+           - ENV_SQL_USERNAME=${SQL_USERNAME}
+           - ENV_SQL_PASSWORD=${SQL_PASSWORD}
+           - ENV_SQL_DATABASE=opsmon
+           - ENV_SQL_TABLE=opsmon
+           - ENV_PAGERDUTY_ENDPOINT=${PAGERDUTY_ENDPOINT}
+           - ENV_PAGERDUTY_ROUTING_KEY=${PAGERDUTY_ROUTING_KEY}
+         
+    opsmon-dashboard:
+         image: rickjacobo/opsmon-dashboard
+         restart: always
+         #ports:
+         #  - 9001:80
+         volumes:
+           - ./web/api/v1/opsmon:/powershell/html/api/v1/status
+           - ./web/status/opsmon:/powershell/html/status
+         environment:
+           - ENV_SQL_HOSTNAME=${SQL_HOSTNAME}
+           - ENV_SQL_USERNAME=${SQL_USERNAME}
+           - ENV_SQL_PASSWORD=${SQL_PASSWORD}
+           - ENV_SQL_DATABASE=opsmon
+           - ENV_SQL_TABLE=opsmon
+           - ENV_PAGERDUTY_ENDPOINT=${PAGERDUTY_ENDPOINT}
+           - ENV_PAGERDUTY_ROUTING_KEY=${PAGERDUTY_ROUTING_KEY}
+
+    webmon:
+         image: rickjacobo/webmon
+         restart: always
+         environment:
+           - ENV_SQL_HOSTNAME=${SQL_HOSTNAME}
+           - ENV_SQL_USERNAME=${SQL_USERNAME}
+           - ENV_SQL_PASSWORD=${SQL_PASSWORD}
+           - ENV_SQL_DATABASE=webmon
+           - ENV_SQL_TABLE=webmon
+           - ENV_PAGERDUTY_ENDPOINT=${PAGERDUTY_ENDPOINT}
+           - ENV_PAGERDUTY_ROUTING_KEY=${PAGERDUTY_ROUTING_KEY}
+
+    webmon-dashboard:
+         image: rickjacobo/webmon-dashboard
+         restart: always
+         #ports:
+         #  - 9002:80
+         volumes:
+           - ./web/api/v1/webmon:/powershell/html/api/v1/status
+           - ./web/status/webmon:/powershell/html/status
+         environment:
+           - ENV_SQL_HOSTNAME=${SQL_HOSTNAME}
+           - ENV_SQL_USERNAME=${SQL_USERNAME}
+           - ENV_SQL_PASSWORD=${SQL_PASSWORD}
+           - ENV_SQL_DATABASE=webmon
+           - ENV_SQL_TABLE=webmon
+           - ENV_PAGERDUTY_ENDPOINT=${PAGERDUTY_ENDPOINT}
+           - ENV_PAGERDUTY_ROUTING_KEY=${PAGERDUTY_ROUTING_KEY}
+
+    certmon:
+         image: rickjacobo/certmon
+         restart: always
+         environment:
+           - ENV_SQL_HOSTNAME=${SQL_HOSTNAME}
+           - ENV_SQL_USERNAME=${SQL_USERNAME}
+           - ENV_SQL_PASSWORD=${SQL_PASSWORD}
+           - ENV_SQL_DATABASE=certmon
+           - ENV_SQL_TABLE=certmon
+           - ENV_PAGERDUTY_ENDPOINT=${PAGERDUTY_ENDPOINT}
+           - ENV_PAGERDUTY_ROUTING_KEY=${PAGERDUTY_ROUTING_KEY}
+
+    certmon-dashboard:
+         image: rickjacobo/certmon-dashboard
+         restart: always
+         #ports:
+         #  - 9003:80
+         volumes:
+           - ./web/api/v1/certmon:/powershell/html/api/v1/status
+           - ./web/status/certmon:/powershell/html/status
+         environment:
+           - ENV_SQL_HOSTNAME=${SQL_HOSTNAME}
+           - ENV_SQL_USERNAME=${SQL_USERNAME}
+           - ENV_SQL_PASSWORD=${SQL_PASSWORD}
+           - ENV_SQL_DATABASE=certmon
+           - ENV_SQL_TABLE=certmon
+           - ENV_PAGERDUTY_ENDPOINT=${PAGERDUTY_ENDPOINT}
+           - ENV_PAGERDUTY_ROUTING_KEY=${PAGERDUTY_ROUTING_KEY}
